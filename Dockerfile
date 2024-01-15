@@ -22,14 +22,16 @@ USER root
 WORKDIR /root
 
 # Install things needed for container setup
-RUN apt update -y \
-&& apt install wget -y \
-&& apt install unzip -y \
-&& apt install p7zip-full -y \
-&& apt install dosbox -y \
-# Create the configuration file.
-&& {timeout 1 dosbox || true} \
-&& DOSBOX_CONFIG=$(ls /root/.dosbox/) \
+RUN apt-get update -y \
+    && apt-get install -y --no-install-recommends wget unzip p7zip-full dosbox
+
+
+RUN apt-get install -y xvfb
+RUN Xvfb :99 & export DISPLAY=:99; timeout 5 dosbox; true
+
+
+RUN DOSBOX_CONFIG=$(ls ~/.dosbox/) \
+&& cd .dosbox \
 && mv $DOSBOX_CONFIG /root/dosbox.conf \
 && DOSBOX_CONFIG=/root/dosbox.conf \
 # Here fix the dosbox configurations for headless.
@@ -38,12 +40,12 @@ RUN apt update -y \
 && echo "mount c /app/dos" >> $DOSBOX_CONFIG \
 && echo "c:" >> $DOSBOX_CONFIG \
 && echo "command < c:\mnt\stdin" >> $DOSBOX_CONFIG \
-&& echo "exit" >> $DOSBOX_CONFIG \
+&& echo "exit" >> $DOSBOX_CONFIG
+
 # Here download and extract command.com from freedos.
-&& wget https://www.ibiblio.org/pub/micro/pc-stuff/freedos/files/distributions/1.3/official/FD13-LiteUSB.zip \
+RUN wget --no-check-certificate  https://www.ibiblio.org/pub/micro/pc-stuff/freedos/files/distributions/1.3/official/FD13-LiteUSB.zip \
 && 7z x FD13* \
 && 7z x FD13LITE.img
-
 
 # Second stage: Debian slim as the base image
 FROM debian:stable-slim as debian-base
@@ -52,7 +54,7 @@ WORKDIR /app
 
 # Need command & dosbox.conf
 COPY --from=ubuntu-base /root/dosbox.conf /app/dosbox.conf
-COPY --from=ubuntu-base /root/dos/command.com /app/dos/command.com
+COPY --from=ubuntu-base /root/COMMAND.COM /app/dos/COMMAND.COM
 
 ENV SDL_VIDEODRIVER="dummy"
 
@@ -65,7 +67,7 @@ RUN apt update -y \
 && rm -rf /var/lib/apt/lists/* \
 # Create a new user and set up its environment
 && useradd -ms /bin/bash newuser \
-&& chown -R newuser:newuser /app 
+&& chown -R newuser:newuser /app
 
 # Switch to the new user
 USER newuser
