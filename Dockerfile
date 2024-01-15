@@ -38,6 +38,7 @@ RUN apt-get update -y \
     && echo "command < c:\mnt\stdin" >> $DOSBOX_CONFIG \
     && echo "exit" >> $DOSBOX_CONFIG \
     # Here download and extract command.com from freedos.
+    && cd /root \
     && wget --no-check-certificate  https://www.ibiblio.org/pub/micro/pc-stuff/freedos/files/distributions/1.3/official/FD13-LiteUSB.zip \
     && 7z x FD13* \
     && 7z x FD13LITE.img \
