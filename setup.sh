@@ -25,6 +25,7 @@ unix2dos $mnt/input.bat
 
 # stdin to start script and optionally enter more stdin.
 cat << EOF > $mnt/stdin
+C:\mnt\input.bat
 exit
 EOF
 chmod 777 $mnt/stdin
