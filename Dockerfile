@@ -40,7 +40,8 @@ RUN apt-get update -y \
     # Here download and extract command.com from freedos.
     && wget --no-check-certificate  https://www.ibiblio.org/pub/micro/pc-stuff/freedos/files/distributions/1.3/official/FD13-LiteUSB.zip \
     && 7z x FD13* \
-    && 7z x FD13LITE.img
+    && 7z x FD13LITE.img \
+    && [ -f ./COMMAND.COM ]
 
 # Second stage: Debian slim as the base image
 FROM debian:stable-slim as debian-base
