@@ -4,7 +4,7 @@
 
 
 ### Download and build Dockerfile
-wget --no-check-certificate  https://raw.githubusercontent.com/mlmerchant/freedos_bat_runner>
+wget --no-check-certificate  https://raw.githubusercontent.com/mlmerchant/freedos_bat_runner/main/Dockerfile
 docker build . -t freedos-runner
 
 
